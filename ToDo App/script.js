@@ -13,29 +13,8 @@ const removeButton = document.querySelector("#remove-todo");
 
 let filter = "";
 
-// respond to todo item clicks
-const todoClickHandler = function(item) {
-  item.classList.toggle("active-todo");
-
-  const todos = document.querySelectorAll(".todo-item");
-  let removeBtnActivated = false;
-
-  for (let index = 0; index < todos.length; index++) {
-    const element = todos[index];
-
-    // check to see if any of the todos are currently clicked
-    if (element.classList.contains("active-todo")) {
-      removeButton.classList.remove("disabled-button"); // enable remove button
-      removeBtnActivated = true;
-      break;
-    }
-  }
-
-  // if none of the todos are currently clicked, disable remove button
-  if (!removeBtnActivated) {
-    removeButton.classList.add("disabled-button");
-  }
-};
+// initialize the list of todos
+renderTodos(todos, todoList);
 
 // Renders out a new list of todos
 function renderTodos(todos, todoList) {
@@ -66,7 +45,10 @@ function renderTodos(todos, todoList) {
 
 // Adds a new todo item onto the page
 function addTodo(todos, todoList, newTodo) {
-  todos.push({ text: newTodo, completed: false });
+  todos.push({
+    text: newTodo,
+    completed: false
+  });
   const todo = document.createElement("p");
   todo.textContent = newTodo;
   todo.classList.add("todo-item", "todo-incomplete");
@@ -76,9 +58,6 @@ function addTodo(todos, todoList, newTodo) {
   });
 }
 
-// initialize the list of todos
-renderTodos(todos, todoList);
-
 addbutton.addEventListener("click", function(e) {
   if (todoInput.value.length > 0) {
     addTodo(todos, todoList, todoInput.value);
@@ -86,11 +65,26 @@ addbutton.addEventListener("click", function(e) {
   }
 });
 
+function removeToDo(todos, removedTodo) {
+  let indexToBeRemoved;
+
+  for (let index = 0; index < todos.length; index++) {
+    const element = todos[index];
+    if (element.text == removedTodo) {
+      indexToBeRemoved = index;
+      break;
+    }
+  }
+
+  todos.splice(indexToBeRemoved, 1);
+  removedTodo.parentNode.removeChild(removedTodo);
+}
+
 removeButton.addEventListener("click", function(e) {
   if (!this.classList.contains("disabled-button")) {
     const todosToBeRemoved = document.querySelectorAll(".active-todo");
     todosToBeRemoved.forEach(function(item) {
-      item.parentNode.removeChild(item);
+      removeToDo(todos, item);
     });
     this.classList.add("disabled-button");
   }
@@ -100,3 +94,27 @@ todoSearch.addEventListener("input", function(e) {
   filter = todoSearch.value;
   renderTodos(todos, todoList);
 });
+
+// respond to todo item clicks
+const todoClickHandler = function(item) {
+  item.classList.toggle("active-todo");
+
+  const todos = document.querySelectorAll(".todo-item");
+  let removeBtnActivated = false;
+
+  for (let index = 0; index < todos.length; index++) {
+    const element = todos[index];
+
+    // check to see if any of the todos are currently clicked
+    if (element.classList.contains("active-todo")) {
+      removeButton.classList.remove("disabled-button"); // enable remove button
+      removeBtnActivated = true;
+      break;
+    }
+  }
+
+  // if none of the todos are currently clicked, disable remove button
+  if (!removeBtnActivated) {
+    removeButton.classList.add("disabled-button");
+  }
+};
