@@ -1,7 +1,7 @@
 const todos = [
-  { text: "Work", completed: true },
-  { text: "Exercise", completed: false },
-  { text: "Eat", completed: true }
+  { text: "Work", completed: true, createdOn: "Wed Aug 29 2018" },
+  { text: "Exercise", completed: false, createdOn: "Sat Aug 24 2018" },
+  { text: "Eat", completed: true, createdOn: "Mon Aug 20 2018" }
 ];
 let filteredTodos = [];
 
@@ -27,14 +27,25 @@ function renderTodos(todos, todoList) {
 
   // render new todos
   filteredTodos.forEach(function(item) {
-    const todo = document.createElement("p");
-    todo.textContent = item.text;
+    const todoText = document.createElement("p");
+    todoText.textContent = item.text;
+    todoText.classList.add("todo-text");
+
+    const todoDate = document.createElement("span");
+    todoDate.textContent = `Created On: ${item.createdOn}`;
+    todoDate.classList.add("todo-createdOn");
+
+    const todo = document.createElement("div");
     todo.classList.add("todo-item");
     if (item.completed) {
       todo.classList.add("todo-complete");
     } else {
       todo.classList.add("todo-incomplete");
     }
+
+    todo.appendChild(todoText);
+    todo.appendChild(todoDate);
+
     todoList.appendChild(todo);
 
     todo.addEventListener("click", function(e) {
@@ -47,7 +58,8 @@ function renderTodos(todos, todoList) {
 function addTodo(todos, todoList, newTodo) {
   todos.push({
     text: newTodo,
-    completed: false
+    completed: false,
+    createdOn: new Date().toDateString()
   });
   renderTodos(todos, todoList);
 }
@@ -60,27 +72,28 @@ addbutton.addEventListener("click", function(e) {
 });
 
 function removeToDo(todos, removedTodo) {
-  let indexToBeRemoved;
-
+  // find and remove todo object from array of todos
   for (let index = 0; index < todos.length; index++) {
     const element = todos[index];
-    if (element.text == removedTodo) {
-      indexToBeRemoved = index;
+    if (element.text == removedTodo.querySelector(".todo-text").textContent) {
+      todos.splice(index, 1);
+      console.log(todos);
       break;
     }
   }
-
-  todos.splice(indexToBeRemoved, 1);
   removedTodo.parentNode.removeChild(removedTodo);
 }
 
 removeButton.addEventListener("click", function(e) {
   if (!this.classList.contains("disabled-button")) {
-    const todosToBeRemoved = document.querySelectorAll(".active-todo");
-    todosToBeRemoved.forEach(function(item) {
-      removeToDo(todos, item);
-    });
-    this.classList.add("disabled-button");
+    if (confirm("Really remove the selected ToDo(s)?")) {
+      const todosToBeRemoved = document.querySelectorAll(".active-todo");
+      todosToBeRemoved.forEach(function(item) {
+        removeToDo(todos, item);
+      });
+      this.classList.add("disabled-button");
+    } else {
+    }
   }
 });
 
