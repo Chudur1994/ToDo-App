@@ -12,9 +12,17 @@
 <body>
   <div class="container">
     <input type="text" placeholder="Add a Todo" name="todo-input" id="todo-input">
-    <div class="button-group">
-      <button class="todo-button" id="add-todo">Add</button>
-      <button class="todo-button disabled-button" id="remove-todo">Remove</button>
+    <div class="controls">
+      <div class="button-group">
+        <button class="todo-button" id="add-todo">Add</button>
+        <button class="todo-button disabled-button" id="remove-todo">Remove</button>
+      </div>
+      <select name="todo-sort" id="todo-sort">
+        <option value="">Sort</option>
+        <option value="date">By Date</option>
+        <option value="incomplete">Incomplete First</option>
+        <option value="complete">Complete First</option>
+      </select>
     </div>
     <div id="todo-list">
 

@@ -32,6 +32,11 @@ body {
   text-align: right;
 }
 
+.todo-completedOn {
+  color: white;
+  text-align: right;
+}
+
 .active-todo {
   border: 2px solid red;
 }
@@ -90,4 +95,9 @@ input[type="search"] {
   margin: 1rem 0;
   padding: 0.5rem 0.25rem;
   margin-top: 0.5rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
 }

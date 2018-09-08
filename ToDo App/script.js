@@ -1,7 +1,17 @@
 const todos = [
-  { text: "Work", completed: true, createdOn: "Wed Aug 29 2018" },
+  {
+    text: "Work",
+    completed: true,
+    createdOn: "Wed Aug 29 2018",
+    completedOn: "Thu Aug 30 2018"
+  },
   { text: "Exercise", completed: false, createdOn: "Sat Aug 24 2018" },
-  { text: "Eat", completed: true, createdOn: "Mon Aug 20 2018" }
+  {
+    text: "Eat",
+    completed: true,
+    createdOn: "Mon Aug 20 2018",
+    completedOn: "Wed Aug 22 2018"
+  }
 ];
 let filteredTodos = [];
 
@@ -10,6 +20,11 @@ const todoInput = document.querySelector("#todo-input");
 const todoSearch = document.querySelector("#todo-search");
 const addbutton = document.querySelector("#add-todo");
 const removeButton = document.querySelector("#remove-todo");
+const sortSelect = document.querySelector("#todo-sort");
+
+sortSelect.addEventListener("onchange", function(e) {
+  console.log("WTF why is this event not firing???");
+});
 
 let filter = "";
 
@@ -27,14 +42,6 @@ function renderTodos(todos, todoList) {
 
   // render new todos
   filteredTodos.forEach(function(item) {
-    const todoText = document.createElement("p");
-    todoText.textContent = item.text;
-    todoText.classList.add("todo-text");
-
-    const todoDate = document.createElement("span");
-    todoDate.textContent = `Created On: ${item.createdOn}`;
-    todoDate.classList.add("todo-createdOn");
-
     const todo = document.createElement("div");
     todo.classList.add("todo-item");
     if (item.completed) {
@@ -43,8 +50,27 @@ function renderTodos(todos, todoList) {
       todo.classList.add("todo-incomplete");
     }
 
+    const todoText = document.createElement("p");
+    todoText.textContent = item.text;
+    todoText.classList.add("todo-text");
     todo.appendChild(todoText);
+
+    const todoDate = document.createElement("span");
+    todoDate.textContent = `Created On: ${item.createdOn}`;
+    todoDate.classList.add("todo-createdOn");
     todo.appendChild(todoDate);
+
+    if (item.completedOn) {
+      const todoCompleted = document.createElement("span");
+      todoCompleted.textContent = `Completed On: ${item.completedOn}`;
+      todoCompleted.classList.add("todo-completedOn");
+      todo.appendChild(todoCompleted);
+    } else {
+      const todoCompleted = document.createElement("span");
+      todoCompleted.textContent = `Completed On: Incomplete`;
+      todoCompleted.classList.add("todo-completedOn");
+      todo.appendChild(todoCompleted);
+    }
 
     todoList.appendChild(todo);
 
@@ -77,7 +103,6 @@ function removeToDo(todos, removedTodo) {
     const element = todos[index];
     if (element.text == removedTodo.querySelector(".todo-text").textContent) {
       todos.splice(index, 1);
-      console.log(todos);
       break;
     }
   }
