@@ -49,13 +49,7 @@ function addTodo(todos, todoList, newTodo) {
     text: newTodo,
     completed: false
   });
-  const todo = document.createElement("p");
-  todo.textContent = newTodo;
-  todo.classList.add("todo-item", "todo-incomplete");
-  todoList.appendChild(todo);
-  todo.addEventListener("click", function(e) {
-    todoClickHandler(todo);
-  });
+  renderTodos(todos, todoList);
 }
 
 addbutton.addEventListener("click", function(e) {
