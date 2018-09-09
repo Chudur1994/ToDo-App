@@ -14,12 +14,14 @@ const todos = [
   }
 ];
 let filteredTodos = [];
+let previousTodos = [];
 
 const todoList = document.querySelector("#todo-list");
 const todoInput = document.querySelector("#todo-input");
 const todoSearch = document.querySelector("#todo-search");
 const addbutton = document.querySelector("#add-todo");
 const removeButton = document.querySelector("#remove-todo");
+const undoButton = document.querySelector("#undo-remove");
 const sortButton = document.querySelector("#sort-todo");
 const sortOptionGroup = document.querySelector(".sort-option-group");
 
@@ -107,16 +109,27 @@ function removeToDo(todos, removedTodo) {
 }
 
 removeButton.addEventListener("click", function(e) {
-  if (!this.classList.contains("disabled-button")) {
-    if (confirm("Really remove the selected ToDo(s)?")) {
-      const todosToBeRemoved = document.querySelectorAll(".active-todo");
-      todosToBeRemoved.forEach(function(item) {
-        removeToDo(todos, item);
-      });
-      this.classList.add("disabled-button");
-    } else {
-    }
+  if (
+    !this.classList.contains("disabled-button") &&
+    confirm("Really remove the selected ToDo(s)?")
+  ) {
+    // remember previous list of todos for undo function
+    previousTodos = todos.slice();
+
+    const todosToBeRemoved = document.querySelectorAll(".active-todo");
+    todosToBeRemoved.forEach(function(item) {
+      removeToDo(todos, item);
+    });
+    this.classList.add("disabled-button");
   }
+
+  undoButton.classList.remove("hidden-button");
+});
+
+undoButton.addEventListener("click", function(e) {
+  todos.splice(0, todos.length, ...previousTodos);
+  undoButton.classList.add("hidden-button");
+  renderTodos(todos, todoList);
 });
 
 todoSearch.addEventListener("input", function(e) {

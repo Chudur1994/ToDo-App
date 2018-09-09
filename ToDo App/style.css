@@ -24,9 +24,6 @@ body {
   margin-bottom: 1rem;
 }
 
-.todo-text {
-}
-
 .todo-createdOn {
   color: white;
   text-align: right;
@@ -79,6 +76,15 @@ body {
 
 #remove-todo {
   background-color: #ef2d2d;
+  margin-right: 1rem;
+}
+
+#undo-remove {
+  background-color: #e89c22;
+}
+
+.hidden-button {
+  display: none;
 }
 
 .disabled-button {
