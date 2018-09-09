@@ -17,12 +17,14 @@
         <button class="todo-button" id="add-todo">Add</button>
         <button class="todo-button disabled-button" id="remove-todo">Remove</button>
       </div>
-      <select name="todo-sort" id="todo-sort">
-        <option value="">Sort</option>
-        <option value="date">By Date</option>
-        <option value="incomplete">Incomplete First</option>
-        <option value="complete">Complete First</option>
-      </select>
+      <div id="sort">
+        <button class="todo-button" id="sort-todo">Sort Todos</button>
+        <div class="sort-option-group">
+          <button class="sort-option todo-button" id="sort-date">By Date</button>
+          <button class="sort-option todo-button" id="sort-incomplete">Incomplete First</button>
+          <button class="sort-option todo-button" id="sort-complete">Complete First</button>
+        </div>
+      </div>
     </div>
     <div id="todo-list">
 

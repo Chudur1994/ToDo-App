@@ -101,3 +101,41 @@ input[type="search"] {
   display: flex;
   justify-content: space-between;
 }
+
+#sort-todo {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  background-color: black;
+}
+
+#sort {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.sort-option-group {
+  position: absolute;
+  display: none;
+  top: 2rem;
+}
+
+.sort-option {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  background-color: #7c7c7c;
+}
+
+.sort-option:hover {
+  background-color: #606060;
+}
+
+.sort-active {
+  display: inline-block;
+}

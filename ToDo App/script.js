@@ -20,11 +20,8 @@ const todoInput = document.querySelector("#todo-input");
 const todoSearch = document.querySelector("#todo-search");
 const addbutton = document.querySelector("#add-todo");
 const removeButton = document.querySelector("#remove-todo");
-const sortSelect = document.querySelector("#todo-sort");
-
-sortSelect.addEventListener("onchange", function(e) {
-  console.log("WTF why is this event not firing???");
-});
+const sortButton = document.querySelector("#sort-todo");
+const sortOptionGroup = document.querySelector(".sort-option-group");
 
 let filter = "";
 
@@ -150,3 +147,46 @@ const todoClickHandler = function(item) {
     removeButton.classList.add("disabled-button");
   }
 };
+
+sortButton.addEventListener("click", function(e) {
+  sortOptionGroup.classList.toggle("sort-active");
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target !== sortButton) {
+    sortOptionGroup.classList.remove("sort-active");
+  }
+});
+
+document.querySelector("#sort-date").addEventListener("click", function(e) {
+  console.log("sort date");
+});
+
+document
+  .querySelector("#sort-incomplete")
+  .addEventListener("click", function(e) {
+    sortByCompletion("incompleted");
+  });
+
+document.querySelector("#sort-complete").addEventListener("click", function(e) {
+  sortByCompletion("completed");
+});
+
+function sortByCompletion(sortType) {
+  let completeTodos = todos.filter(function(item) {
+    return item.completed;
+  });
+
+  let incompleteTodos = todos.filter(function(item) {
+    return !item.completed;
+  });
+
+  let sortedTodos = [];
+  if (sortType == "incompleted") {
+    sortedTodos = incompleteTodos.concat(completeTodos);
+  } else if ((sortType = "completed")) {
+    sortedTodos = completeTodos.concat(incompleteTodos);
+  }
+
+  renderTodos(sortedTodos, todoList);
+}
