@@ -136,6 +136,10 @@ input[type="search"] {
   background-color: #606060;
 }
 
+.sort-option-selected {
+  background-color: #606060;
+}
+
 .sort-active {
   display: inline-block;
 }

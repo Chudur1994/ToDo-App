@@ -158,35 +158,68 @@ document.addEventListener("click", function(e) {
   }
 });
 
-document.querySelector("#sort-date").addEventListener("click", function(e) {
-  console.log("sort date");
-});
+document
+  .querySelector("#sort-dateCreated")
+  .addEventListener("click", function(e) {
+    let dateSorted = todos.sort(function(a, b) {
+      if (new Date(a.createdOn) < new Date(b.createdOn)) {
+        return -1;
+      } else if (new Date(a.createdOn) > new Date(b.createdOn)) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    renderTodos(dateSorted, todoList);
+    sortButton.textContent = "Date Created";
+    document.querySelectorAll(".sort-option").forEach(function(item) {
+      item.classList.remove("sort-option-selected");
+    });
+    this.classList.add("sort-option-selected");
+  });
+
+document
+  .querySelector("#sort-dateCompleted")
+  .addEventListener("click", function(e) {
+    let dateSorted = todos.sort(function(a, b) {
+      if (!b.completedOn || new Date(a.completedOn) < new Date(b.completedOn)) {
+        return -1;
+      } else if (
+        !a.completedOn ||
+        new Date(a.completedOn) > new Date(b.completedOn)
+      ) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    renderTodos(dateSorted, todoList);
+    sortButton.textContent = "Date Completed";
+    document.querySelectorAll(".sort-option").forEach(function(item) {
+      item.classList.remove("sort-option-selected");
+    });
+    this.classList.add("sort-option-selected");
+  });
 
 document
   .querySelector("#sort-incomplete")
   .addEventListener("click", function(e) {
-    sortByCompletion("incompleted");
+    let completeTodos = todos.filter(function(item) {
+      return item.completed;
+    });
+
+    let incompleteTodos = todos.filter(function(item) {
+      return !item.completed;
+    });
+
+    const sortedTodos = incompleteTodos.concat(completeTodos);
+
+    renderTodos(sortedTodos, todoList);
+    sortButton.textContent = "Incomplete First";
+    document.querySelectorAll(".sort-option").forEach(function(item) {
+      item.classList.remove("sort-option-selected");
+    });
+    this.classList.add("sort-option-selected");
   });
-
-document.querySelector("#sort-complete").addEventListener("click", function(e) {
-  sortByCompletion("completed");
-});
-
-function sortByCompletion(sortType) {
-  let completeTodos = todos.filter(function(item) {
-    return item.completed;
-  });
-
-  let incompleteTodos = todos.filter(function(item) {
-    return !item.completed;
-  });
-
-  let sortedTodos = [];
-  if (sortType == "incompleted") {
-    sortedTodos = incompleteTodos.concat(completeTodos);
-  } else if ((sortType = "completed")) {
-    sortedTodos = completeTodos.concat(incompleteTodos);
-  }
-
-  renderTodos(sortedTodos, todoList);
-}
