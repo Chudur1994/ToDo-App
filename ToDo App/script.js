@@ -25,7 +25,14 @@ const undoButton = document.querySelector("#undo-remove");
 const sortButton = document.querySelector("#sort-todo");
 const sortOptionGroup = document.querySelector(".sort-option-group");
 
+const Sorts = Object.freeze({
+  CREATED_ON: Symbol("Created On"),
+  COMPLETED_ON: Symbol("Completed On"),
+  INCOMPLETE: Symbol("Incomplete")
+});
+
 let filter = "";
+let sortedBy;
 
 // initialize the list of todos
 renderTodos(todos, todoList);
@@ -86,7 +93,29 @@ function addTodo(todos, todoList, newTodo) {
     completed: false,
     createdOn: new Date().toDateString()
   });
-  renderTodos(todos, todoList);
+
+  renderTodos(getSortedTodos(), todoList);
+}
+
+function getSortedTodos() {
+  let todosToRender;
+
+  switch (sortedBy) {
+    case Sorts.COMPLETED_ON:
+      todosToRender = dateCompletedSort();
+      break;
+    case Sorts.CREATED_ON:
+      todosToRender = dateCreatedSort();
+      break;
+    case Sorts.INCOMPLETE:
+      todosToRender = incompleteSort();
+      break;
+    default:
+      todosToRender = todos.slice();
+      break;
+  }
+
+  return todosToRender;
 }
 
 addbutton.addEventListener("click", function(e) {
@@ -129,7 +158,7 @@ removeButton.addEventListener("click", function(e) {
 undoButton.addEventListener("click", function(e) {
   todos.splice(0, todos.length, ...previousTodos);
   undoButton.classList.add("hidden-button");
-  renderTodos(todos, todoList);
+  renderTodos(getSortedTodos(), todoList);
 });
 
 todoSearch.addEventListener("input", function(e) {
@@ -174,15 +203,7 @@ document.addEventListener("click", function(e) {
 document
   .querySelector("#sort-dateCreated")
   .addEventListener("click", function(e) {
-    let dateSorted = todos.sort(function(a, b) {
-      if (new Date(a.createdOn) < new Date(b.createdOn)) {
-        return -1;
-      } else if (new Date(a.createdOn) > new Date(b.createdOn)) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+    let dateSorted = dateCreatedSort();
 
     renderTodos(dateSorted, todoList);
     sortButton.textContent = "Date Created";
@@ -190,23 +211,25 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
+    sortedBy = Sorts.CREATED_ON;
   });
+
+function dateCreatedSort() {
+  return todos.sort(function(a, b) {
+    if (new Date(a.createdOn) < new Date(b.createdOn)) {
+      return -1;
+    } else if (new Date(a.createdOn) > new Date(b.createdOn)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+}
 
 document
   .querySelector("#sort-dateCompleted")
   .addEventListener("click", function(e) {
-    let dateSorted = todos.sort(function(a, b) {
-      if (!b.completedOn || new Date(a.completedOn) < new Date(b.completedOn)) {
-        return -1;
-      } else if (
-        !a.completedOn ||
-        new Date(a.completedOn) > new Date(b.completedOn)
-      ) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+    let dateSorted = dateCompletedSort();
 
     renderTodos(dateSorted, todoList);
     sortButton.textContent = "Date Completed";
@@ -214,20 +237,28 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
+    sortedBy = Sorts.COMPLETED_ON;
   });
+
+function dateCompletedSort() {
+  return todos.sort(function(a, b) {
+    if (!b.completedOn || new Date(a.completedOn) < new Date(b.completedOn)) {
+      return -1;
+    } else if (
+      !a.completedOn ||
+      new Date(a.completedOn) > new Date(b.completedOn)
+    ) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+}
 
 document
   .querySelector("#sort-incomplete")
   .addEventListener("click", function(e) {
-    let completeTodos = todos.filter(function(item) {
-      return item.completed;
-    });
-
-    let incompleteTodos = todos.filter(function(item) {
-      return !item.completed;
-    });
-
-    const sortedTodos = incompleteTodos.concat(completeTodos);
+    const sortedTodos = incompleteSort();
 
     renderTodos(sortedTodos, todoList);
     sortButton.textContent = "Incomplete First";
@@ -235,4 +266,17 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
+    sortedBy = Sorts.INCOMPLETE;
   });
+
+function incompleteSort() {
+  let completeTodos = todos.filter(function(item) {
+    return item.completed;
+  });
+
+  let incompleteTodos = todos.filter(function(item) {
+    return !item.completed;
+  });
+
+  return incompleteTodos.concat(completeTodos);
+}
