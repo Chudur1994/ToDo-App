@@ -25,14 +25,15 @@ const undoButton = document.querySelector("#undo-remove");
 const sortButton = document.querySelector("#sort-todo");
 const sortOptionGroup = document.querySelector(".sort-option-group");
 
-const Sorts = Object.freeze({
-  CREATED_ON: Symbol("Created On"),
-  COMPLETED_ON: Symbol("Completed On"),
-  INCOMPLETE: Symbol("Incomplete")
-});
-
-let filter = "";
-let sortedBy;
+let filter = {
+  search: "", // current text in the search field
+  sorts: Object.freeze({
+    CREATED_ON: Symbol("Created On"),
+    COMPLETED_ON: Symbol("Completed On"),
+    INCOMPLETE: Symbol("Incomplete")
+  }), // Sort ENUM
+  sortedBy: {} // current sort applied to the list
+};
 
 // initialize the list of todos
 renderTodos(todos, todoList);
@@ -40,7 +41,7 @@ renderTodos(todos, todoList);
 // Renders out a new list of todos
 function renderTodos(todos, todoList) {
   filteredTodos = todos.filter(function(item) {
-    return item.text.toLowerCase().includes(filter.toLowerCase());
+    return item.text.toLowerCase().includes(filter.search.toLowerCase());
   });
 
   // clear previous list of todos on page
@@ -100,14 +101,14 @@ function addTodo(todos, todoList, newTodo) {
 function getSortedTodos() {
   let todosToRender;
 
-  switch (sortedBy) {
-    case Sorts.COMPLETED_ON:
+  switch (filter.sortedBy) {
+    case filter.sorts.COMPLETED_ON:
       todosToRender = dateCompletedSort();
       break;
-    case Sorts.CREATED_ON:
+    case filter.sorts.CREATED_ON:
       todosToRender = dateCreatedSort();
       break;
-    case Sorts.INCOMPLETE:
+    case filter.sorts.COMPLETED_ON:
       todosToRender = incompleteSort();
       break;
     default:
@@ -156,13 +157,13 @@ removeButton.addEventListener("click", function(e) {
 });
 
 undoButton.addEventListener("click", function(e) {
-  todos.splice(0, todos.length, ...previousTodos);
+  todos.splice(0, todos.length, ...previousTodos); // replace the contents of the current todos array with the previous todos array
   undoButton.classList.add("hidden-button");
   renderTodos(getSortedTodos(), todoList);
 });
 
 todoSearch.addEventListener("input", function(e) {
-  filter = todoSearch.value;
+  filter.search = todoSearch.value;
   renderTodos(todos, todoList);
 });
 
@@ -211,7 +212,7 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
-    sortedBy = Sorts.CREATED_ON;
+    filter.sortedBy = filter.sorts.CREATED_ON;
   });
 
 function dateCreatedSort() {
@@ -237,7 +238,7 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
-    sortedBy = Sorts.COMPLETED_ON;
+    filter.sortedBy = filter.sorts.COMPLETED_ON;
   });
 
 function dateCompletedSort() {
@@ -266,7 +267,7 @@ document
       item.classList.remove("sort-option-selected");
     });
     this.classList.add("sort-option-selected");
-    sortedBy = Sorts.INCOMPLETE;
+    filter.sortedBy = filter.sorts.INCOMPLETE;
   });
 
 function incompleteSort() {
